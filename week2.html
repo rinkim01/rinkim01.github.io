@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1 Progress - Smart Hockey Stick</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <header class="header">
+        <div class="title">
+            <h1>Motion-Tracking Smart Hockey Stick</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index1.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Weekly Progress ▼</a>
+                    <ul class="dropdown-content">
+                        <li><a href="week1.html">Week 1</a></li>
+                        <li><a href="week2.html">Week 2</a></li>
+                        <li><a href="week3.html">Week 3</a></li>
+                        <li><a href="week4.html">Week 4</a></li>
+                    </ul>
+                </li>
+                <li><a href="about.html">Demonstration Video</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="log-container">
+        <section class="log-section">
+            <h1 class="page-title">Week 2</h1>
+            <p>The main objective of Week 2 was to ensure both the GPS and Power generation module were working properly. Following successful completion of the both modules, the full circuit would then be assembled and tested. We also aimed to integrate the modules with the Raspberry Pi Pico and ensure data could be collected and stored properly.</p>
+
+            <h2>Software</h2>
+            <p>Following the successful completion of the GPS and accelerometer modules, we focused on software integration. The Raspberry Pi Pico was programmed to read data from both modules.</p>
+            
+            <div class="image-text">
+                <img src="week2 simulation result.png" alt="Mock test code" class="resize-img">
+                <div class="text-content">
+                    <p>Following a brief simulation test, we confirmed that the Raspberry Pi Pico was able to successfully read and process data from both the GPS and accelerometer modules. The results obtained from the accelerometer were reasonable and within expected ranges however, the GPS was not picking up any signal which was attributed to the indoor environment.</p>
+                </div>
+            </div>
+
+            <h2>Hardware</h2>
+            <div class="image-text">
+                <img src="Image7.jpg" alt="Power Generation" class="resize-img">
+                <div class="text-content">
+                    <p>For the hardware section, we began by setting up the power generation module. This involved using the concept of Faraday torch(shake flashlight) to generate power through motion. A copper coil was wrapped around a PVC pipe and a magnet was attached to the inside of the pipe. When the pipe is shaken, the magnet moves within the coil, generating electricity. However, due to the absence of the magnets, the power generation module was not fully functional.</p>
+                </div>
+            </div>
+
+            <div class="image-text">
+                <img src="Image2.jpeg" alt="GPS Module" class="resize-img">
+                <div class="text-content">
+                    <p>Next, we focused on the GPS. The GPS module was connected to the Raspberry Pi Pico using UART communication to track the location of the hockey stick. A GPS patch antenna was also attached to the module to improve signal reception. The set up was placed near window to improve signal strength. However, due to the lack of a proper GPS signal in the indoor environment, we were unable to fully test the GPS functionality.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

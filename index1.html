@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motion-Tracking Smart Hockey Stick</title>
+    <link rel="stylesheet" href="style1.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* 1. Standardize the Viewport */
+        html,
+        body {
+            height: 100vh;
+            margin: 0;
+            padding: 10px;
+            /* Reduced from 20px to match the old blog */
+            overflow: hidden;
+            background-color: #0d1117;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            /* Stack header and main vertically */
+
+        }
+
+        /* 2. Fix the Header Height */
+        .header {
+            flex: 0 0 auto;
+            padding: 16px 20px !important;
+            /* Matches style1.css padding */
+            background-color: #161b22 !important;
+            /* Matches style1.css background */
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 3. The Main Dashboard Area */
+        .no-scroll-dashboard {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            grid-template-rows: auto auto 1fr;
+            gap: 8px;
+            /* Adjust this to 110px to account for the larger header */
+            flex-grow: 1;
+    min-height: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            /* Matches style1.css gap */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 4. KPI and Button Row */
+        .kpi-row {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+
+        .kpi-row .kpi-card {
+            flex: 1;
+            padding: 10px !important;
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            
+        }
+
+        /* 5. Map and Chart Cards */
+        .map-card,
+        .chart-card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 0;
+            /* Allows shrinking */
+        }
+
+        #map,
+        .canvas-container {
+            flex: 1;
+            min-height: 0;
+            /* Key for No-Scroll */
+            width: 100%;
+        }
+
+        .charts-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+            min-height: 0;
+        }
+       .kpi-row h2 { font-size: 1.2rem; margin: 0; line-height: 1;}
+
+        h3 {
+            margin: 0 0 5px 0 !important;
+            font-size: 1.2rem !important;
+            text-align: center;
+        }
+
+        .download-btn {
+            background: #7289FF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="title">
+            <h1>Motion-Tracking Smart Hockey Stick</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index1.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Weekly Progress ▼</a>
+                    <ul class="dropdown-content">
+                        <li><a href="week1.html">Week 1</a></li>
+                        <li><a href="week2.html">Week 2</a></li>
+                        <li><a href="week3.html">Week 3</a></li>
+                        <li><a href="week4.html">Week 4</a></li>
+                    </ul>
+                </li>
+                <li><a href="about.html">Demonstration Video</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="no-scroll-dashboard">
+        <div
+            style="grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; width: 100%; margin:0;">
+            <span id="connection-status" style="color: #FF2E63; font-weight: bold; font-size: 1rem;">
+                🔴 OFFLINE (Showing Last Saved Data)
+            </span>
+        </div>
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <h2>Current Speed: <span class="highlight" id="val-speed">0.0 km/h</span></h2>
+            </div>
+            <div class="kpi-card">
+                <h2>Total Distance: <span class="highlight" id="val-dist">0.00 km</span></h2>
+            </div>
+            <button onclick="downloadCSV()" class="download-btn">📥 Download Session</button>
+        </div>
+
+        <div class="map-card">
+            <h3>GPS Tracking Route</h3>
+            <div id="map"></div>
+        </div>
+
+        <div class="charts-wrapper">
+            <div class="chart-card">
+                <h3>Skating Speed over Time </h3>
+                <div class="canvas-container"><canvas id="speedChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Ax, Ay, Az over Time</h3>
+                <div class="canvas-container"><canvas id="accelChart"></canvas></div>
+            </div>
+        </div>
+    </main>
+    <script>
+        // --- 1. CONFIGURATION ---
+        const PICO_IP = "http://172.29.171.30/data";
+
+        // --- 2. STORAGE SETUP (Updated for 3D) ---
+        let stickData = JSON.parse(localStorage.getItem('stickMemory')) || {
+            labels: [], speed: [], x: [], y: [], z: [], lastSpeed: 0, lastDist: 0
+        };
+
+        document.getElementById('val-speed').innerText = stickData.lastSpeed.toFixed(1) + " km/h";
+        document.getElementById('val-dist').innerText = stickData.lastDist.toFixed(2) + " km";
+
+        // --- 3. CHART SETUP ---
+        Chart.defaults.color = '#8b949e';
+        Chart.defaults.borderColor = '#30363d';
+
+        // --- Updated Common Options ---
+// --- Updated Common Options for Graph Paper Effect ---
+const commonOptions = { 
+    animation: false, 
+    maintainAspectRatio: false, // Allows us to control the container size via CSS
+    elements: { point: { radius: 0 } },
+   scales: { 
+    x: { 
+        display: true, 
+        grid: { 
+            display: true, 
+            color: 'rgba(255, 255, 255, 0.1)', // Brighter grid for paper look
+            lineWidth: 1
+        },
+        ticks: { 
+            display: true, 
+            color: '#8b949e',
+            maxTicksLimit: 10 
+        },
+        title: { 
+            display: true, 
+            text: 'Time (s)', 
+            color: '#8b949e',
+            font: { weight: 'bold' }
+        }
+    },
+    y: {
+        grid: {
+            display: true,
+            color: 'rgba(255, 255, 255, 0.1)' // Matches X-axis for square effect
+        },
+        ticks: {
+            stepSize: 5 // Forces horizontal lines every 5 units
+        }
+    }
+}
+};
+
+        // --- 1. Skating Speed Chart ---
+const speedCtx = document.getElementById('speedChart').getContext('2d');
+const speedChart = new Chart(speedCtx, {
+    type: 'line',
+    data: { 
+        labels: stickData.labels, 
+        datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }] 
+    },
+    options: { 
+        ...commonOptions, 
+        scales: { 
+            ...commonOptions.scales, // Properly inherits the "Time (s)" X-axis title
+            y: { 
+                min: 0, max: 40,
+                title: { 
+                    display: true, 
+                    text: 'Speed (km/h)', 
+                    color: '#8b949e', 
+                    font: { weight: 'bold' } 
+                }
+            }
+        } 
+    }
+});
+
+// --- 2. 3D Stick Motion Chart ---
+const accelCtx = document.getElementById('accelChart').getContext('2d');
+const accelChart = new Chart(accelCtx, {
+    type: 'line',
+    data: {
+        labels: stickData.labels,
+        datasets: [
+            { label: 'Ax', borderColor: '#FF2E63', borderWidth: 2, data: stickData.x, fill: false },
+            { label: 'Ay', borderColor: '#00ffcc', borderWidth: 2, data: stickData.y, fill: false },
+            { label: 'Az', borderColor: '#F1E05A', borderWidth: 2, data: stickData.z, fill: false }
+        ]
+    },
+    options: { 
+        ...commonOptions, 
+        scales: { 
+            ...commonOptions.scales, // Inherits "Time (s)" title
+            y: { 
+                min: -20, max: 20,
+                title: { 
+                    display: true, 
+                    text: 'Acceleration (m/s²)', 
+                    color: '#8b949e', 
+                    font: { weight: 'bold' } 
+                }
+            }
+        } 
+    }
+});
+        // --- 4. MAP SETUP ---
+        const map = L.map('map').setView([53.404, -2.968], 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+        const stickMarker = L.circleMarker([53.404, -2.968], { color: '#00ffcc', fillColor: '#00ffcc', fillOpacity: 0.8, radius: 8 }).addTo(map);
+
+        function parseNMEA(nmeaStr) {
+            if (!nmeaStr || nmeaStr === "0.0") return null;
+            let dir = nmeaStr.slice(-1);
+            let valStr = nmeaStr.slice(0, -1);
+            let dotIndex = valStr.indexOf('.');
+            if (dotIndex < 2) return null;
+            let minStr = valStr.slice(dotIndex - 2);
+            let degStr = valStr.slice(0, dotIndex - 2);
+            let deg = parseInt(degStr) || 0;
+            let min = parseFloat(minStr) || 0;
+            let decimal = deg + (min / 60);
+            if (dir === 'S' || dir === 'W') decimal = -decimal;
+            return decimal;
+        }
+
+        // --- 5. DATA FETCH LOOP (Updated for 3D) ---
+        setInterval(async () => {
+            try {
+                const response = await fetch(PICO_IP, { signal: AbortSignal.timeout(3000) });
+                const data = await response.json();
+
+                document.getElementById('connection-status').innerHTML = "🟢 LIVE";
+                document.getElementById('connection-status').style.color = "#00ffcc";
+                document.getElementById('connection-status').style.fontSize = "1rem";
+                document.getElementById('connection-status').style.fontWeight = "bold";
+                document.getElementById('val-speed').innerText = data.speed.toFixed(1) + " km/h";
+                document.getElementById('val-dist').innerText = data.dist.toFixed(2) + " km";
+
+                if (stickData.labels.length > 50) {
+                    stickData.labels.shift();
+                    stickData.speed.shift();
+                    stickData.x.shift();
+                    stickData.y.shift();
+                    stickData.z.shift();
+                }
+
+                stickData.labels.push(data.time.toFixed(0));
+                stickData.speed.push(data.speed);
+                stickData.x.push(data.x);
+                stickData.y.push(data.y);
+                stickData.z.push(data.z);
+
+                stickData.lastSpeed = data.speed;
+                stickData.lastDist = data.dist;
+                localStorage.setItem('stickMemory', JSON.stringify(stickData));
+
+                speedChart.update();
+                accelChart.update();
+
+                if (data.lat && data.lon) {
+                    let latDD = parseNMEA(data.lat);
+                    let lonDD = parseNMEA(data.lon);
+                    if (latDD && lonDD) {
+                        let newPos = new L.LatLng(latDD, lonDD);
+                        stickMarker.setLatLng(newPos);
+                        map.panTo(newPos);
+                    }
+                }
+            } catch (error) {
+                document.getElementById('connection-status').innerHTML = "🔴 OFFLINE (Showing Last Saved Data)";
+                document.getElementById('connection-status').style.color = "#FF2E63";
+            }
+        }, 1000);
+
+        function downloadCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,Time_s,Speed_kmh,Ax_ms2,Ay_ms2,Az_ms2\n";
+    stickData.speed.forEach((s, i) => {
+        // CHANGED: Use stickData.labels[i] instead of just 'i'
+        let row = [stickData.labels[i], s, stickData.x[i], stickData.y[i], stickData.z[i]].join(",");
+        csvContent += row + "\n";
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "hockey_session_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+    </script>
+</body>
+
+</html>
