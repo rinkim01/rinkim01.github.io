@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4 Progress - Smart Hockey Stick</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="title">
+            <h1>Motion-Tracking Smart Hockey Stick</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Weekly Progress ▼</a>
+                    <ul class="dropdown-content">
+                        <li><a href="week1.html">Week 1</a></li>
+                        <li><a href="week2.html">Week 2</a></li>
+                        <li><a href="week3.html">Week 3</a></li>
+                        <li><a href="week4.html">Week 4</a></li>
+                    </ul>
+                </li>
+                <li><a href="about.html">Demonstration Video</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="log-container">
+        <section class="log-section">
+            <h1 class="page-title">Week 3</h1>
+            <p>The final week aimed to integrate the permanent electronics with the hockey stick and transition our data
+                system into a high-performance, real-time IoT platform. We sought to evaluate the mechanical balance of
+                the stick and resolve final power delivery challenges to ensure a seamless user experience.
+
+            </p>
+
+            <h2>Software</h2>
+            <p>Following the successful completion of the GPS and accelerometer modules, we focused on software
+                integration. The Raspberry Pi Pico was programmed to read data from both modules.</p>
+
+            <div class="image-text">
+                <img src="week2 simulation result.png" alt="Mock test code" class="resize-img">
+                <div class="text-content">
+                    <p>Our project reached its zenith with the deployment of a real-time IoT telemetry platform,
+                        connecting the Pico and our laptops via a smartphone hotspot. We configured the Pico to host a
+                        non-blocking socket, broadcasting sensor data as JSON strings to a custom web dashboard. We also
+                        added a firmware filter to discard signal noise, ensuring the live graphs displayed 100%
+                        accurate speed and distance metrics.
+                    </p>
+
+                </div>
+            </div>
+
+            <h2>Hardware</h2>
+            <div class="image-text">
+                <img src="Image7.jpg" alt="Power Generation" class="resize-img">
+                <div class="text-content">
+                    <p> We finalized the apparatus by mounting the power generator and circuitry onto the hockey stick.
+                        The swinging motion of the stick successfully generated electrical energy, proving the core
+                        concept of our kinetic harvester. To ensure uninterrupted performance during intensive sessions,
+                        we proactively decided to utilize a power bank as a reliable backup energy source. </p>
+
+                </div>
+            </div>
+
+            <div class="image-text">
+                <img src="Image8.jpg" alt="Accelerometer & GPS Modules" class="resize-img">
+                <div class="text-content">
+                    <p> We securely attached the fully assembled PCB to the hockey stick. After initial testing for
+                        balance, we optimized the mounting position lower and closer to the stick's surface to maximize
+                        mechanical stability and handling. This final integration confirmed that our Smart Hockey Stick
+                        was not only a technical success but also a viable, balanced tool for athletes, capable of
+                        delivering live performance analytics directly from the ice.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
