@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Week 3 Progress - Smart Hockey Stick</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header class="header">
         <div class="title">
@@ -31,16 +33,25 @@
     <main class="log-container">
         <section class="log-section">
             <h1 class="page-title">Week 3</h1>
-            <p>The third week focused on moving the project from a temporary breadboard environment to a permanent hardware configuration. The goal was to solder the power generation and sensor circuits onto Veroboards and stripboards to ensure mechanical durability during athletic testing.
-</p>
+            <p>The third week focused on moving our project from a temporary breadboard environment to a permanent,
+                field-ready hardware configuration. Our goal was to solder the power generation and sensor circuits onto
+                Veroboards and stripboards to ensure mechanical durability during high-impact athletic testing.
+            </p>
 
             <h2>Software</h2>
-            <p>Following the successful completion of the GPS and accelerometer modules, we focused on software integration. The Raspberry Pi Pico was programmed to read data from both modules.</p>
-            
+            <p>Following the successful completion of the GPS and accelerometer modules, we focused on software
+                integration. The Raspberry Pi Pico was programmed to read data from both modules.</p>
+
             <div class="image-text">
                 <img src="week2 simulation result.png" alt="Mock test code" class="resize-img">
                 <div class="text-content">
-                    <p>Following a brief simulation test, we confirmed that the Raspberry Pi Pico was able to successfully read and process data from both the GPS and accelerometer modules. The results obtained from the accelerometer were reasonable and within expected ranges however, the GPS was not picking up any signal which was attributed to the indoor environment.</p>
+                    <p>
+                        Following the transfer of our components to a Veroboard, we conducted rigorous debugging to
+                        ensure system stability. By identifying and severing unintended copper track connections that
+                        were causing a short circuit, we restored full software functionality on the permanent hardware.
+                        This process ensured our software could reliably interact with the hardware even under the
+                        stresses of a permanent build. </p>
+
                 </div>
             </div>
 
@@ -48,15 +59,27 @@
             <div class="image-text">
                 <img src="Image7.jpg" alt="Power Generation" class="resize-img">
                 <div class="text-content">
-                    <p>To make the generated power usable for electronics, the coil was connected to a rectifier bridge to convert AC voltage to DC voltage. Because the resulting DC voltage was unstable and insufficient, a supercapacitor and an MT3608 boost converter were added to the circuit. The team discovered the boost converter required approximately 20 full anticlockwise turns to begin stepping up the voltage. It was noted that the high capacitance meant it took roughly ten minutes to charge the system to the required 3.3V.</p>
+                    <p>
+                        We permanently soldered the power generation unit onto a dedicated board. Subsequent testing
+                        verified that the rectifier bridge successfully converted AC to DC during the charging process.
+                        We established a safe operating window between 3.3V and 5V, ensuring our Pico could function
+                        correctly without risk of damage.
+
                 </div>
             </div>
 
             <div class="image-text">
                 <img src="Image8.jpg" alt="Accelerometer & GPS Modules" class="resize-img">
                 <div class="text-content">
-                    <p>The MPU6050 accelerometer was integrated via I2C at 400 kHz, although initial detection failed due to the Pico being improperly seated on the breadboard. During testing, the original GPS module overheated and failed, requiring a replacement with a backup module. By the end of the week, we had verified a combined script that successfully logged latitude, longitude, speed in m/s, 3-axis acceleration, and calculated total distance. 
-</p>
+                    <p>T
+                        We mounted the GPS and accelerometer modules onto a stripboard with header pins and insulated
+                        wire to create a robust, permanent circuit. After reflowing a cold solder joint to ensure a
+                        perfect connection, we used a multimeter to verify zero continuity between VCC and GND. The
+                        system successfully detected both sensors, marking the completion of a permanent, battle-tested
+                        hardware configuration.
+
+
+                    </p>
                 </div>
             </div>
         </section>
@@ -64,5 +87,3 @@
 </body>
 
 </html>
-
-
