@@ -39,16 +39,20 @@
             </p>
 
             <h2>Software</h2>
-            <p>Following the successful completion of the GPS and accelerometer modules, we focused on software
-                integration. The Raspberry Pi Pico was programmed to read data from both modules.</p>
+            <p>This week’s software efforts were dedicated to refining our data parsing logic to handle real-world
+                sensor outputs and launching our project's public-facing digital presence.</p>
 
             <div class="image-text">
                 <img src="week2 simulation result.png" alt="Mock test code" class="resize-img">
                 <div class="text-content">
-                    <p>Following a brief simulation test, we confirmed that the Raspberry Pi Pico was able to
-                        successfully read and process data from both the GPS and accelerometer modules. The results
-                        obtained from the accelerometer were reasonable and within expected ranges however, the GPS was
-                        not picking up any signal which was attributed to the indoor environment.</p>
+                    <p>We implemented a critical firmware update after discovering our logging script was ignoring data
+                        from the modern dual-constellation GPS module, which utilized "$GNRMC" headers instead of the
+                        "$GPRMC" headers our code was originally expecting. We modified the code to catch both string
+                        types to ensure zero data loss and confirmed that the sensors were outputting reasonable values
+                        once physical connections were secured. Additionally, we successfully launched the first draft
+                        of our project’s web dashboard using HTML and CSS, providing a professional interface for future
+                        data visualization.
+                    </p>
                 </div>
             </div>
 
@@ -58,22 +62,18 @@
                 <div class="text-content">
                     <p>To make the generated power usable for electronics, the coil was connected to a rectifier bridge
                         to convert AC voltage to DC voltage. Because the resulting DC voltage was unstable and
-                        insufficient, a supercapacitor and an MT3608 boost converter were added to the circuit. The team
-                        discovered the boost converter required approximately 20 full anticlockwise turns to begin
-                        stepping up the voltage. It was noted that the high capacitance meant it took roughly ten
-                        minutes to charge the system to the required 3.3V.</p>
+                        insufficient, a supercapacitor and an MT3608 boost converter were added to the circuit. We also
+                        successfully optimized the MT3608 boost converter discovering it required approximately 15-20
+                        full anticlockwise turns to begin
+                        stepping up the voltage. It was noted that the high capacitance of the supercapacitor meant it
+                        took roughly ten minutes to charge the system to the required 3.3V.</p>
                 </div>
             </div>
 
             <div class="image-text">
                 <img src="Image8.jpg" alt="Accelerometer & GPS Modules" class="resize-img">
                 <div class="text-content">
-                    <p>The MPU6050 accelerometer was integrated via I2C at 400 kHz, although initial detection failed
-                        due to the Pico being improperly seated on the breadboard. During testing, the original GPS
-                        module overheated and failed, requiring a replacement with a backup module. By the end of the
-                        week, we had verified a combined script that successfully logged latitude, longitude, speed in
-                        m/s, 3-axis acceleration, and calculated total distance.
-                    </p>
+                    <p>The MPU6050 accelerometer was integrated via I2C at 400 kHz. After troubleshooting the Pico's breadboard seating issues to ensure stable power delivery, we deployed a backup GPS module to maintain momentum after the original unit overheated. By the end of the week, our dual-sensor integration was confirmed with a combined script successfully logging speed, distance, and 3-axis motion in real-time. </p>
                 </div>
             </div>
         </section>
