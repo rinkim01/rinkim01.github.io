@@ -33,14 +33,18 @@
     <main class="log-container">
         <section class="log-section">
             <h1 class="page-title">Week 1</h1>
-            <p>The main objective of Week 1 was to compare the received components against our listed inventory to
-                ensure all parts were present and functional. Upon inspection, all components were present except for
-                the magnets. The project was divided into two main sections: hardware and software. The hardware section
-                was further divided into two more sections: power generation and gps & accelerometer.</p>
+            <p>Our primary objective for the inaugural week was to verify the inventory of delivered components and
+                establish the baseline functionality of our core hardware and software modules. We aimed to validate the
+                Raspberry Pi Pico WH’s operating environment, confirm the feasibility of the kinetic energy harvester
+                through electromagnetic induction, and establish basic communication protocols for the GPS module.
+
+                The project was divided into two main sections: hardware and software. The hardware section was further
+                divided into two more sections: power generation and gps & accelerometer.</p>
 
             <h2>Software</h2>
-            <p>For the software section, we installed the necessary libraries for interfacing with the GPS and
-                accelerometer modules.</p>
+            <p>The software development during this phase focused on initializing the microcontroller environment and
+                establishing a robust logic framework for data acquisition through simulation.
+            </p>
 
             <div class="image-text">
                 <img src="Image5.jpg" alt="Mock test code" class="resize-img">
@@ -57,6 +61,7 @@
             </div>
 
             <h2>Hardware</h2>
+            <p>The hardware focus centered on the physical construction of our power generation apparatus and the initial wiring of our tracking sensors to ensure baseline communication.</p>
             <div class="image-text">
                 <img src="Image9.jpg" alt="Power Generation" class="resize-img">
                 <div class="text-content">
@@ -71,13 +76,7 @@
             <div class="image-text">
                 <img src="Image2.jpeg" alt="Accelerometer & GPS Modules" class="resize-img">
                 <div class="text-content">
-                    <p> Initial hardware testing focused on establishing UART communication between the NEO-M8 GPS
-                        module and the Pico. The module was wired to the Pico's 3.3V rail and GND, with GPS TX connected
-                        to GP5 (RX) and GPS RX to GP4 (TX). While indoor testing initially yielded no data,
-                        repositioning the antenna near a window enabled the reception of raw NMEA sentences ($GNGGA,
-                        $GNRMC).
-
-                    </p>
+                    <p>Initial hardware testing focused on establishing UART communication between the NEO-M8 GPS module and the Pico. The module to the Pico's 3.3V rail and GND, connecting GPS TX to GP5 and GPS RX to GP4. While we did not receive data indoors at first, repositioning the antenna near a window enabled the reception of raw NMEA sentences, marking a major milestone in communication.</p>
                 </div>
             </div>
         </section>
