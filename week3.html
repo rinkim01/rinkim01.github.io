@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1 Progress - Smart Hockey Stick</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="title">
+            <h1>Motion-Tracking Smart Hockey Stick</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Weekly Progress ▼</a>
+                    <ul class="dropdown-content">
+                        <li><a href="week1.html">Week 1</a></li>
+                        <li><a href="week2.html">Week 2</a></li>
+                        <li><a href="week3.html">Week 3</a></li>
+                        <li><a href="week4.html">Week 4</a></li>
+                    </ul>
+                </li>
+                <li><a href="about.html">Demonstration Video</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="log-container">
+        <section class="log-section">
+            <h1 class="page-title">Week 2</h1>
+            <p>The main objective of Week 2 was to ensure both the GPS and Power generation module were working properly. Following successful completion of the both modules, the full circuit would then be assembled and tested. We also aimed to integrate the modules with the Raspberry Pi Pico and ensure data could be collected and stored properly.</p>
+
+            <h2>Software</h2>
+            <p>Following the successful completion of the GPS and accelerometer modules, we focused on software integration. The Raspberry Pi Pico was programmed to read data from both modules.</p>
+            
+            <div class="image-text">
+                <img src="week2 simulation result.png" alt="Mock test code" class="resize-img">
+                <div class="text-content">
+                    <p>Following a brief simulation test, we confirmed that the Raspberry Pi Pico was able to successfully read and process data from both the GPS and accelerometer modules. The results obtained from the accelerometer were reasonable and within expected ranges however, the GPS was not picking up any signal which was attributed to the indoor environment.</p>
+                </div>
+            </div>
+
+            <h2>Hardware</h2>
+            <div class="image-text">
+                <img src="Image7.jpg" alt="Power Generation" class="resize-img">
+                <div class="text-content">
+                    <p>To make the generated power usable for electronics, the coil was connected to a rectifier bridge to convert AC voltage to DC voltage. Because the resulting DC voltage was unstable and insufficient, a supercapacitor and an MT3608 boost converter were added to the circuit. The team discovered the boost converter required approximately 20 full anticlockwise turns to begin stepping up the voltage. It was noted that the high capacitance meant it took roughly ten minutes to charge the system to the required 3.3V.</p>
+                </div>
+            </div>
+
+            <div class="image-text">
+                <img src="Image8.jpg" alt="Accelerometer & GPS Modules" class="resize-img">
+                <div class="text-content">
+                    <p>The MPU6050 accelerometer was integrated via I2C at 400 kHz, although initial detection failed due to the Pico being improperly seated on the breadboard. During testing, the original GPS module overheated and failed, requiring a replacement with a backup module. By the end of the week, we had verified a combined script that successfully logged latitude, longitude, speed in m/s, 3-axis acceleration, and calculated total distance. 
+</p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
+
+
