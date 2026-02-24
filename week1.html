@@ -71,11 +71,13 @@
             <div class="image-text">
                 <img src="Image2.jpeg" alt="Accelerometer & GPS Modules" class="resize-img">
                 <div class="text-content">
-                    <p>Next, we focused on the GPS. The GPS module was connected to the Raspberry Pi Pico using UART
-                        communication to track the location of the hockey stick. A GPS patch antenna was also attached
-                        to the module to improve signal reception. The set up was placed near window to improve signal
-                        strength. However, due to the lack of a proper GPS signal in the indoor environment, we were
-                        unable to fully test the GPS functionality.</p>
+                    <p> Initial hardware testing focused on establishing UART communication between the NEO-M8 GPS
+                        module and the Pico. The module was wired to the Pico's 3.3V rail and GND, with GPS TX connected
+                        to GP5 (RX) and GPS RX to GP4 (TX). While indoor testing initially yielded no data,
+                        repositioning the antenna near a window enabled the reception of raw NMEA sentences ($GNGGA,
+                        $GNRMC).
+
+                    </p>
                 </div>
             </div>
         </section>
