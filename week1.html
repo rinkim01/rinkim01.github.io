@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Week 1 Progress - Smart Hockey Stick</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header class="header">
         <div class="title">
@@ -31,15 +33,26 @@
     <main class="log-container">
         <section class="log-section">
             <h1 class="page-title">Week 1</h1>
-            <p>The main objective of Week 1 was to compare the received components against our listed inventory to ensure all parts were present and functional. Upon inspection, all components were present except for the magnets. The project was divided into two main sections: hardware and software. The hardware section was further divided into two more sections: power generation and gps & accelerometer.</p>
+            <p>The main objective of Week 1 was to compare the received components against our listed inventory to
+                ensure all parts were present and functional. Upon inspection, all components were present except for
+                the magnets. The project was divided into two main sections: hardware and software. The hardware section
+                was further divided into two more sections: power generation and gps & accelerometer.</p>
 
             <h2>Software</h2>
-            <p>For the software section, we installed the necessary libraries for interfacing with the GPS and accelerometer modules.</p>
-            
+            <p>For the software section, we installed the necessary libraries for interfacing with the GPS and
+                accelerometer modules.</p>
+
             <div class="image-text">
                 <img src="Image5.jpg" alt="Mock test code" class="resize-img">
                 <div class="text-content">
-                    <p>A mock test with fake drivers was conducted to ensure the Raspeberry Pi Pico would be able to generate data, store the data in memory and if the data would later be accessible for analysis.</p>
+                    <p> The software phase commenced with the initialization of the Raspberry Pi Pico W. An initial
+                        connection error in the Thonny IDE was resolved by installing the MicroPython operating system.
+                        To validate the data logging architecture before hardware completion, a simulation was conducted
+                        using "fake" sensor drivers designed to mimic hockey stick kinetics, such as generating random
+                        acceleration values and fixed dummy locations. This test successfully generated a synchronized
+                        CSV file containing mock timestamps, geospatial coordinates, and speed data.
+
+                    </p>
                 </div>
             </div>
 
@@ -47,14 +60,22 @@
             <div class="image-text">
                 <img src="Image8.jpg" alt="Power Generation" class="resize-img">
                 <div class="text-content">
-                    <p>For the hardware section, we began by setting up the power generation module. This involved using the concept of Faraday torch(shake flashlight) to generate power through motion. A copper coil was wrapped around a PVC pipe and a magnet was attached to the inside of the pipe. When the pipe is shaken, the magnet moves within the coil, generating electricity. However, due to the absence of the magnets, the power generation module was not fully functional.</p>
+                    <p>For the hardware section, we began by setting up the power generation module. This involved using
+                        the concept of Faraday torch(shake flashlight) to generate power through motion. A copper coil
+                        was wrapped around a PVC pipe and a magnet was attached to the inside of the pipe. When the pipe
+                        is shaken, the magnet moves within the coil, generating electricity. However, due to the absence
+                        of the magnets, the power generation module was not fully functional.</p>
                 </div>
             </div>
 
             <div class="image-text">
                 <img src="Image2.jpeg" alt="Accelerometer & GPS Modules" class="resize-img">
                 <div class="text-content">
-                    <p>Next, we focused on the GPS. The GPS module was connected to the Raspberry Pi Pico using UART communication to track the location of the hockey stick. A GPS patch antenna was also attached to the module to improve signal reception. The set up was placed near window to improve signal strength. However, due to the lack of a proper GPS signal in the indoor environment, we were unable to fully test the GPS functionality.</p>
+                    <p>Next, we focused on the GPS. The GPS module was connected to the Raspberry Pi Pico using UART
+                        communication to track the location of the hockey stick. A GPS patch antenna was also attached
+                        to the module to improve signal reception. The set up was placed near window to improve signal
+                        strength. However, due to the lack of a proper GPS signal in the indoor environment, we were
+                        unable to fully test the GPS functionality.</p>
                 </div>
             </div>
         </section>
@@ -62,5 +83,3 @@
 </body>
 
 </html>
-
-
