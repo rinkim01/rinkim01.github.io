@@ -362,6 +362,7 @@ const accelChart = new Chart(document.getElementById('accelChart'), {
                         let newPos = new L.LatLng(latDD, lonDD);
                         stickMarker.setLatLng(newPos);
                         map.panTo(newPos);
+                        map.invalidateSize();
                     }
                 }
             } catch (error) {
