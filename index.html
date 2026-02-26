@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,175 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        /* 1. Standardize the Viewport */
+        /* 1. Standardize the Viewport - Mobile First */
+        html,
+        body {
+            min-height: 100vh;
+            /* Allow body to grow with content */
+            margin: 0;
+            padding: 10px;
+            background-color: #0d1117;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            /* Prevent horizontal jitter */
+            overflow-y: auto;
+            /* Enable scrolling for mobile */
+        }
+
+        /* 2. Responsive Header */
+        .header {
+            flex: 0 0 auto;
+            padding: 10px 15px !important;
+            background-color: #161b22 !important;
+            border-bottom: 1px solid #30363d;
+            display: flex;
+            flex-wrap: wrap;
+            /* Stack title and nav on very small screens */
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {            
+            margin: 0;
+        }
+
+        /* 3. The Main Dashboard Area - Stacked by default */
+        .no-scroll-dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* Single column for mobile */
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        /* 4. KPI and Button Row */
+        .kpi-row {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-wrap: wrap;
+            /* Wraps cards so they don't squash */
+            gap: 8px;
+        }
+
+        .kpi-row .kpi-card {
+            flex: 1 1 140px;
+            /* Allow cards to grow/shrink but maintain a base width */
+            padding: 12px !important;
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .download-btn {
+            flex: 1 1 100%;
+            /* Full width button on mobile */
+            background: #7289FF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* 5. Map and Chart Cards */
+        .map-card,
+        .chart-card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            min-height: 350px;
+            height: auto;
+            max-height: 500px;
+            /* Ensure visibility */
+        }
+
+        #map,
+        .canvas-container {
+            position: relative;
+            flex: 1;
+            /* Fills the card space */
+            min-height: 0;
+            /* CRITICAL: Allows the container to shrink/stay fixed */
+            height: 250px;
+            /* Your fixed height */
+            width: 100%;
+        }
+
+        canvas {
+            display: block;
+            /* Prevents extra inline padding at the bottom */
+            max-height: 100%;
+            /* Ensures the chart never grows taller than the container */
+        }
+
+        .chart-card {
+            /* Prevents the card itself from growing if the chart tries to expand */
+            max-height: 400px;
+        }
+
+        .charts-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: auto;
+            max-height: 75vh;
+            border-radius: 25px;
+           
+        }
+
+        /* --- DESKTOP ADAPTATIONS (Screens wider than 1024px) --- */
+        @media (min-width: 1024px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+                /* Re-enable no-scroll for the "Dashboard" look */
+            }
+
+            .no-scroll-dashboard {
+                grid-template-columns: 1.2fr 1fr;
+                /* Side-by-side layout */
+                grid-template-rows: auto auto 1fr;
+                height: calc(100vh - 100px);
+                /* Fill remaining viewport */
+            }
+
+            .download-btn {
+                flex: 0 0 auto;
+                /* Natural width on desktop */
+                padding: 0 20px;
+            }
+
+            .map-card {
+                grid-row: 3;
+            }
+
+            .charts-wrapper {
+                grid-row: 3;
+                overflow-y: auto;
+                /* If charts are too tall, scroll inside the wrapper */
+            }
+        }
+    </style>
 </head>
+
 <body>
     <header class="header">
-        <div class="title"><h1>Motion-Tracking Smart Hockey Stick</h1></div>
+        <div class="title">
+            <h1>Motion-Tracking Smart Hockey Stick</h1>
+        </div>
         <nav>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -29,11 +195,13 @@
         </nav>
     </header>
 
-    <main class="dashboard-wrapper">
-        <div class="status-container">
-            <span id="connection-status" style="color: #FF2E63;">🔴 OFFLINE (Showing Last Saved Data)</span>
+    <main class="no-scroll-dashboard">
+        <div
+            style="grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; width: 100%; margin:0;">
+            <span id="connection-status" style="color: #FF2E63; font-weight: bold; font-size: 1rem;">
+                🔴 OFFLINE (Showing Last Saved Data)
+            </span>
         </div>
-
         <div class="kpi-row">
             <div class="kpi-card">
                 <h2>Current Speed: <span class="highlight" id="val-speed">0.0 km/h</span></h2>
@@ -44,142 +212,191 @@
             <button onclick="downloadCSV()" class="download-btn">📥 Download Session</button>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="map-card">
-                <h3>GPS Tracking Route</h3>
-                <div id="map"></div>
-            </div>
+        <div class="map-card">
+            <h3>GPS Tracking Route</h3>
+            <div id="map"></div>
+        </div>
 
-            <div class="charts-stack">
-                <div class="chart-card">
-                    <h3>Skating Speed (km/h)</h3>
-                    <div class="canvas-container"><canvas id="speedChart"></canvas></div>
-                </div>
-                <div class="chart-card">
-                    <h3>3-Axis Acceleration (m/s²)</h3>
-                    <div class="canvas-container"><canvas id="accelChart"></canvas></div>
-                </div>
+        <div class="charts-wrapper">
+            <div class="chart-card">
+                <h3>Skating Speed over Time </h3>
+                <div class="canvas-container"><canvas id="speedChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>Ax, Ay, Az over Time</h3>
+                <div class="canvas-container"><canvas id="accelChart"></canvas></div>
             </div>
         </div>
     </main>
-
     <script>
+        // --- 1. CONFIGURATION ---
         const PICO_IP = "http://172.29.171.30/data";
-        const clamp = (val, min, max) => Math.max(min, Math.min(max, val));
 
+        // --- 2. STORAGE SETUP (Updated for 3D) ---
         let stickData = JSON.parse(localStorage.getItem('stickMemory')) || {
             labels: [], speed: [], x: [], y: [], z: [], lastSpeed: 0, lastDist: 0
         };
 
-        // --- Chart Configuration ---
+        document.getElementById('val-speed').innerText = stickData.lastSpeed.toFixed(1) + " km/h";
+        document.getElementById('val-dist').innerText = stickData.lastDist.toFixed(2) + " km";
+
+        // --- 3. CHART SETUP ---
         Chart.defaults.color = '#8b949e';
         Chart.defaults.borderColor = '#30363d';
 
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            elements: { point: { radius: 0 } },
-            scales: {
-                x: {
-                    display: true,
-                    title: { display: true, text: 'Time (s)', font: { weight: 'bold' } },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                }
+        // --- Updated Common Options ---
+        // --- Updated Common Options for Graph Paper Effect ---
+        // --- Updated Common Options with Time Axis restored ---
+const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    elements: { point: { radius: 0 } },
+    scales: {
+        x: {
+            display: true,
+            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+            ticks: { color: '#8b949e', maxTicksLimit: 10 },
+            title: { 
+                display: true, 
+                text: 'Time (s)', 
+                color: '#8b949e', 
+                font: { weight: 'bold' } 
             }
-        };
+        },
+        y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+        }
+    }
+};
 
-        const speedChart = new Chart(document.getElementById('speedChart'), {
-            type: 'line',
-            data: {
-                labels: stickData.labels,
-                datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }]
-            },
-            options: { ...commonOptions, scales: { ...commonOptions.scales, y: { min: 0, max: 50 } } }
-        });
+// --- 1. Speed Chart ---
+const speedChart = new Chart(document.getElementById('speedChart'), {
+    type: 'line',
+    data: {
+        labels: stickData.labels,
+        datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            x: commonOptions.scales.x, // Explicitly keep x-axis
+            y: { 
+                min: 0, max: 45, // Cap view at 45km/h
+                title: { display: true, text: 'Speed (km/h)', color: '#8b949e' } 
+            }
+        }
+    }
+});
 
-        const accelChart = new Chart(document.getElementById('accelChart'), {
-            type: 'line',
-            data: {
-                labels: stickData.labels,
-                datasets: [
-                    { label: 'Ax', borderColor: '#FF2E63', data: stickData.x },
-                    { label: 'Ay', borderColor: '#00ffcc', data: stickData.y },
-                    { label: 'Az', borderColor: '#F1E05A', data: stickData.z }
-                ]
-            },
-            options: { ...commonOptions, scales: { ...commonOptions.scales, y: { min: -30, max: 30 } } }
-        });
-
-        // --- Map Logic ---
+// --- 2. Accel Chart ---
+const accelChart = new Chart(document.getElementById('accelChart'), {
+    type: 'line',
+    data: {
+        labels: stickData.labels,
+        datasets: [
+            { label: 'Ax', borderColor: '#FF2E63', data: stickData.x },
+            { label: 'Ay', borderColor: '#00ffcc', data: stickData.y },
+            { label: 'Az', borderColor: '#F1E05A', data: stickData.z }
+        ]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            x: commonOptions.scales.x, // Explicitly keep x-axis
+            y: { 
+                min: -30, max: 30, // Cap view so 10,000 spikes don't flatten lines
+                title: { display: true, text: 'Acceleration (m/s²)', color: '#8b949e' } 
+            }
+        }
+    }
+});
+        // --- 4. MAP SETUP ---
         const map = L.map('map').setView([53.404, -2.968], 15);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-        const stickMarker = L.circleMarker([53.404, -2.968], { color: '#00ffcc', radius: 8 }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+        const stickMarker = L.circleMarker([53.404, -2.968], { color: '#00ffcc', fillColor: '#00ffcc', fillOpacity: 0.8, radius: 8 }).addTo(map);
 
         function parseNMEA(nmeaStr) {
             if (!nmeaStr || nmeaStr === "0.0") return null;
             let dir = nmeaStr.slice(-1);
             let valStr = nmeaStr.slice(0, -1);
-            let deg = parseInt(valStr.slice(0, valStr.indexOf('.') - 2)) || 0;
-            let min = parseFloat(valStr.slice(valStr.indexOf('.') - 2)) || 0;
+            let dotIndex = valStr.indexOf('.');
+            if (dotIndex < 2) return null;
+            let minStr = valStr.slice(dotIndex - 2);
+            let degStr = valStr.slice(0, dotIndex - 2);
+            let deg = parseInt(degStr) || 0;
+            let min = parseFloat(minStr) || 0;
             let decimal = deg + (min / 60);
-            return (dir === 'S' || dir === 'W') ? -decimal : decimal;
+            if (dir === 'S' || dir === 'W') decimal = -decimal;
+            return decimal;
         }
 
-        // --- Data Loop ---
+        // --- 5. DATA FETCH LOOP (Updated for 3D) ---
         setInterval(async () => {
             try {
-                const response = await fetch(PICO_IP, { signal: AbortSignal.timeout(2000) });
+                const response = await fetch(PICO_IP, { signal: AbortSignal.timeout(3000) });
                 const data = await response.json();
 
-                const statusEl = document.getElementById('connection-status');
-                statusEl.innerText = "🟢 LIVE";
-                statusEl.style.color = "#00ffcc";
-
+                document.getElementById('connection-status').innerHTML = "🟢 LIVE";
+                document.getElementById('connection-status').style.color = "#00ffcc";
+                document.getElementById('connection-status').style.fontSize = "1rem";
+                document.getElementById('connection-status').style.fontWeight = "bold";
                 document.getElementById('val-speed').innerText = data.speed.toFixed(1) + " km/h";
                 document.getElementById('val-dist').innerText = data.dist.toFixed(2) + " km";
 
                 if (stickData.labels.length > 50) {
-                    ['labels', 'speed', 'x', 'y', 'z'].forEach(key => stickData[key].shift());
+                    stickData.labels.shift();
+                    stickData.speed.shift();
+                    stickData.x.shift();
+                    stickData.y.shift();
+                    stickData.z.shift();
                 }
 
                 stickData.labels.push(data.time.toFixed(0));
-                stickData.speed.push(clamp(data.speed, 0, 50));
-                stickData.x.push(clamp(data.x, -30, 30));
-                stickData.y.push(clamp(data.y, -30, 30));
-                stickData.z.push(clamp(data.z, -30, 30));
+                stickData.speed.push(data.speed);
+                stickData.x.push(data.x);
+                stickData.y.push(data.y);
+                stickData.z.push(data.z);
+
+                stickData.lastSpeed = data.speed;
+                stickData.lastDist = data.dist;
+                localStorage.setItem('stickMemory', JSON.stringify(stickData));
 
                 speedChart.update();
                 accelChart.update();
 
-                let lat = parseNMEA(data.lat);
-                let lon = parseNMEA(data.lon);
-                if (lat && lon) {
-                    let pos = [lat, lon];
-                    stickMarker.setLatLng(pos);
-                    map.panTo(pos);
+                if (data.lat && data.lon) {
+                    let latDD = parseNMEA(data.lat);
+                    let lonDD = parseNMEA(data.lon);
+                    if (latDD && lonDD) {
+                        let newPos = new L.LatLng(latDD, lonDD);
+                        stickMarker.setLatLng(newPos);
+                        map.panTo(newPos);
+                    }
                 }
-                localStorage.setItem('stickMemory', JSON.stringify(stickData));
-            } catch (e) {
-                document.getElementById('connection-status').innerText = "🔴 OFFLINE (Showing Last Saved Data)";
+            } catch (error) {
+                document.getElementById('connection-status').innerHTML = "🔴 OFFLINE (Showing Last Saved Data)";
                 document.getElementById('connection-status').style.color = "#FF2E63";
             }
         }, 1000);
 
         function downloadCSV() {
-            let csv = "Time_s,Speed_kmh,Ax,Ay,Az\n";
-            stickData.labels.forEach((l, i) => {
-                csv += `${l},${stickData.speed[i]},${stickData.x[i]},${stickData.y[i]},${stickData.z[i]}\n`;
+            let csvContent = "data:text/csv;charset=utf-8,Time_s,Speed_kmh,Ax_ms2,Ay_ms2,Az_ms2\n";
+            stickData.speed.forEach((s, i) => {
+                // CHANGED: Use stickData.labels[i] instead of just 'i'
+                let row = [stickData.labels[i], s, stickData.x[i], stickData.y[i], stickData.z[i]].join(",");
+                csvContent += row + "\n";
             });
+            const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
-            link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-            link.download = 'hockey_data.csv';
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "hockey_session_data.csv");
+            document.body.appendChild(link);
             link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
+
 </html>
