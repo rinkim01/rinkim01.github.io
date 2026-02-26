@@ -332,3 +332,44 @@ canvas {
         grid-template-columns: 1fr 1fr; /* 2 columns for laptop */
     }
 }
+/* --- Poster Page Styling --- */
+.poster-display {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    background-color: #161b22;
+    padding: 15px;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+}
+
+.poster-display img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+}
+
+/* Update nav-links to handle 4 items better on medium screens */
+@media (min-width: 851px) and (max-width: 1100px) {
+    .nav-links {
+        gap: 15px; /* Shrinks gap so buttons don't hit the title */
+    }
+}
+
+/* Standard Download Button Styling */
+.download-btn {
+    background: #7289FF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+    background: #5a6edb;
+}
