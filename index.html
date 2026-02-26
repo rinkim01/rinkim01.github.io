@@ -246,77 +246,72 @@
 
         // --- Updated Common Options ---
         // --- Updated Common Options for Graph Paper Effect ---
-        const commonOptions = {
-            responsive: true,
-            maintainAspectRatio: false, // This is the most important line
-            animation: false,
-            elements: { point: { radius: 0 } },
-            scales: {
-                x: {
-                    // ... your existing x axis config
-                },
-                y: {
-                    // This prevents "endless" stretching by forcing the scale
-                    // to stay within a logical range even if data spikes to 10000
-                    beginAtZero: true,
-                    grace: '5%'
-                }
+        // --- Updated Common Options with Time Axis restored ---
+const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    elements: { point: { radius: 0 } },
+    scales: {
+        x: {
+            display: true,
+            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+            ticks: { color: '#8b949e', maxTicksLimit: 10 },
+            title: { 
+                display: true, 
+                text: 'Time (s)', 
+                color: '#8b949e', 
+                font: { weight: 'bold' } 
             }
-        };
+        },
+        y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+        }
+    }
+};
 
-        // --- 1. Skating Speed Chart ---
-        const speedCtx = document.getElementById('speedChart').getContext('2d');
-        const speedChart = new Chart(speedCtx, {
-            type: 'line',
-            data: {
-                labels: stickData.labels,
-                datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }]
-            },
-            options: {
-                ...commonOptions,
-                scales: {
-                    ...commonOptions.scales, // Properly inherits the "Time (s)" X-axis title
-                    y: {
-                        min: 0, max: 40,
-                        title: {
-                            display: true,
-                            text: 'Speed (km/h)',
-                            color: '#8b949e',
-                            font: { weight: 'bold' }
-                        }
-                    }
-                }
+// --- 1. Speed Chart ---
+const speedChart = new Chart(document.getElementById('speedChart'), {
+    type: 'line',
+    data: {
+        labels: stickData.labels,
+        datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            x: commonOptions.scales.x, // Explicitly keep x-axis
+            y: { 
+                min: 0, max: 45, // Cap view at 45km/h
+                title: { display: true, text: 'Speed (km/h)', color: '#8b949e' } 
             }
-        });
+        }
+    }
+});
 
-        // --- 2. 3D Stick Motion Chart ---
-        const accelCtx = document.getElementById('accelChart').getContext('2d');
-        const accelChart = new Chart(accelCtx, {
-            type: 'line',
-            data: {
-                labels: stickData.labels,
-                datasets: [
-                    { label: 'Ax', borderColor: '#FF2E63', borderWidth: 2, data: stickData.x, fill: false },
-                    { label: 'Ay', borderColor: '#00ffcc', borderWidth: 2, data: stickData.y, fill: false },
-                    { label: 'Az', borderColor: '#F1E05A', borderWidth: 2, data: stickData.z, fill: false }
-                ]
-            },
-            options: {
-                ...commonOptions,
-                scales: {
-                    ...commonOptions.scales, // Inherits "Time (s)" title
-                    y: {
-                        min: -20, max: 20,
-                        title: {
-                            display: true,
-                            text: 'Acceleration (m/s²)',
-                            color: '#8b949e',
-                            font: { weight: 'bold' }
-                        }
-                    }
-                }
+// --- 2. Accel Chart ---
+const accelChart = new Chart(document.getElementById('accelChart'), {
+    type: 'line',
+    data: {
+        labels: stickData.labels,
+        datasets: [
+            { label: 'Ax', borderColor: '#FF2E63', data: stickData.x },
+            { label: 'Ay', borderColor: '#00ffcc', data: stickData.y },
+            { label: 'Az', borderColor: '#F1E05A', data: stickData.z }
+        ]
+    },
+    options: {
+        ...commonOptions,
+        scales: {
+            x: commonOptions.scales.x, // Explicitly keep x-axis
+            y: { 
+                min: -30, max: 30, // Cap view so 10,000 spikes don't flatten lines
+                title: { display: true, text: 'Acceleration (m/s²)', color: '#8b949e' } 
             }
-        });
+        }
+    }
+});
         // --- 4. MAP SETUP ---
         const map = L.map('map').setView([53.404, -2.968], 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
