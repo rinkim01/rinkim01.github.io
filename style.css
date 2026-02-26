@@ -278,13 +278,3 @@ canvas {
         transform: translateX(-50%);
     }
 }
-@media (max-width: 850px) {
-    .map-card {
-        height: auto;
-        min-height: 450px; /* Forces the card to be tall enough on phones */
-    }
-
-    #map {
-        height: 400px !important; /* Hard-coded height for mobile visibility */
-    }
-}
