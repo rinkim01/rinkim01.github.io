@@ -226,7 +226,7 @@ h3 {
 }
 
 @media (min-width: 1024px) {
-    body { height: 100vh; overflow: hidden; }
+    body.dashboard-page { height: 100vh; overflow: hidden; }
     .no-scroll-dashboard {
         grid-template-columns: 1.2fr 1fr;
         height: calc(100vh - 120px);
