@@ -216,3 +216,44 @@ h3 {
         width: 100%;
     }
 }
+
+/* Dashboard Layout Logic */
+.no-scroll-dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 10px;
+}
+
+@media (min-width: 1024px) {
+    body { height: 100vh; overflow: hidden; }
+    .no-scroll-dashboard {
+        grid-template-columns: 1.2fr 1fr;
+        height: calc(100vh - 120px);
+    }
+    .charts-wrapper { overflow-y: auto; padding-right: 5px; }
+}
+
+/* Force Chart Constraints */
+.canvas-container {
+    height: 250px;
+    width: 100%;
+    position: relative;
+    min-height: 0;
+}
+
+canvas {
+    max-height: 100% !important;
+}
+
+/* Fix KPI wrapping on mobile */
+.kpi-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.kpi-card {
+    flex: 1 1 150px;
+}
