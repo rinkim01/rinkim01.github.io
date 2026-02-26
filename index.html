@@ -295,7 +295,7 @@ const accelChart = new Chart(document.getElementById('accelChart'), {
         scales: {
             x: commonOptions.scales.x, // Explicitly keep x-axis
             y: { 
-                min: -30, max: 30, // Cap view so 10,000 spikes don't flatten lines
+                min: -20, max: 20, // Cap view so 10,000 spikes don't flatten lines
                 title: { display: true, text: 'Acceleration (m/s²)', color: '#8b949e' } 
             }
         }
