@@ -116,24 +116,6 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    min-height: 400px;
-}
-#map {
-    /* Critical: Leaflet needs a defined height to render tiles */
-    height: 350px; 
-    width: 100%;
-    border-radius: 4px;
-    flex-grow: 1; /* Allows it to stretch to fill the card on desktop */
-}
-
-@media (min-width: 1024px) {
-    .map-card {
-        min-height: 0; /* Let the grid handle the height on laptop */
-        height: 100%;
-    }
-    #map {
-        height: 100%;
-    }
 }
 
 .charts-container {
@@ -294,5 +276,15 @@ canvas {
     .dropdown-content {
         left: 50%;
         transform: translateX(-50%);
+    }
+}
+@media (max-width: 1024px) {
+    .map-card {
+        height: auto;
+        min-height: 450px; /* Forces the card to be tall enough on phones */
+    }
+
+    #map {
+        height: 400px !important; /* Hard-coded height for mobile visibility */
     }
 }
