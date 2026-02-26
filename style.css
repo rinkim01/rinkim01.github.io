@@ -13,7 +13,7 @@ body {
     padding: 20px;
 }
 
-
+/* --- HEADER & NAV: Desktop Default --- */
 .header {
     display: flex;
     justify-content: space-between;
@@ -22,12 +22,10 @@ body {
     margin-bottom: 20px;
     background-color: #161b22;
     border-bottom: 1px solid #30363d;
-    color: white;
 }
 
 .header h1 {
     font-size: 1.5rem;
-    margin: 0;
     color: #7289FF;
 }
 
@@ -35,246 +33,93 @@ body {
     display: flex;
     list-style: none;
     gap: 30px;
-    margin: 0;
-    padding: 0;
 }
 
 .nav-links a {
     text-decoration: none;
     color: #c9d1d9; 
     font-weight: 500;
-    transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
-    color: #7289FF; 
-}
-
-.dropdown {
-    position: relative;
-}
-
+.dropdown { position: relative; }
 .dropdown-content {
     display: none;
     position: absolute;
     background-color: #161b22;
     min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5);
     border: 1px solid #30363d;
-    border-radius: 4px;
     z-index: 1001;
-    list-style: none;
-    padding: 10px 0;
     top: 100%;
-    left: 0;
 }
+.dropdown:hover .dropdown-content { display: block; }
 
-.dropdown-content li {
-    width: 100%;
-}
-
-.dropdown-content a {
-    padding: 10px 16px;
-    display: block;
-    font-size: 0.9rem;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #21262d;
-}
-
-.dashboard-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    grid-template-rows: auto 1fr; 
-    gap: 20px;
-    height: calc(100vh - 100px); 
-}
-
-
-.kpi-card {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-}
-
-.highlight {
-    color: #7289FF; 
-    font-size: 1.5rem;
-}
-
-.map-card {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-.charts-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.chart-card {
-    background-color: #161b22;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    padding: 20px;
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-}
-
-h3 {
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    font-weight: 400;
-}
-
-/* Placeholders until you add JS */
-.map-placeholder, .chart-placeholder {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #21262d;
-    border-radius: 4px;
-    color: #8b949e;
-}
-
-/* Progress Log Layout (Week 1, 2, etc.) */
-.log-container {
-    max-width: 1200px;
-    margin: 0 auto; /* Centers the content on the page */
-    padding: 20px;
-    color: #c9d1d9; /* Light grey text for readability in dark mode */
-    text-align: justify;
-}
-
-.log-section h1.page-title {
-    font-size: 2.5rem;
-    color: #ffffff;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #30363d;
-    padding-bottom: 10px;
-}
-
-.log-section h2 {
-    font-size: 1.8rem;
-    color: #ffffff;
-    margin-top: 40px;
-    margin-bottom: 15px;
-}
-
-.log-section p {
-    line-height: 1.6;
-    margin-bottom: 20px;
-    font-size: 1.05rem;
-}
-
-/* Image and Text alignment */
-.image-text {
-    display: flex;
-    align-items: flex-start;
-    gap: 30px;
-    margin-bottom: 40px;
-    background-color: #161b22;
-    padding: 20px;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    text-align: justify;
-}
-
-.resize-img {
-    width: 400px;
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-.text-content {
-    flex: 1;
-}
-
-/* Make it responsive for smaller screens */
-@media (max-width: 800px) {
-    .image-text {
-        flex-direction: column;
-    }
-    .resize-img {
-        width: 100%;
-    }
-}
-
-/* Dashboard Layout Logic */
+/* --- DASHBOARD GRID --- */
 .no-scroll-dashboard {
     display: grid;
     grid-template-columns: 1fr;
     gap: 15px;
-    padding: 16px, 20px;
 }
 
-@media (min-width: 1024px) {
-    body.dashboard-page { height: 100vh; overflow: hidden; }
-    .no-scroll-dashboard {
-        grid-template-columns: 1.2fr 1fr;
-        height: calc(100vh - 120px);
-    }
-    .charts-wrapper { overflow-y: auto; padding-right: 5px; }
-}
-
-/* Force Chart Constraints */
-.canvas-container {
-    height: 250px;
-    width: 100%;
-    position: relative;
-    min-height: 0;
-}
-
-canvas {
-    max-height: 100% !important;
-}
-
-/* Fix KPI wrapping on mobile */
 .kpi-row {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    width: 100%;
 }
 
 .kpi-card {
     flex: 1 1 150px;
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
 }
 
+/* --- MAP & CHARTS --- */
+.map-card, .chart-card {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+#map {
+    width: 100%;
+    height: 400px !important; /* CRITICAL FIX: Forced height for mobile */
+    min-height: 400px;
+    border-radius: 4px;
+}
+
+.canvas-container {
+    height: 250px;
+    width: 100%;
+    position: relative;
+}
+
+/* --- DESKTOP OVERRIDES (Screens > 1024px) --- */
+@media (min-width: 1024px) {
+    body.dashboard-page { height: 100vh; overflow: hidden; }
+    
+    .no-scroll-dashboard {
+        grid-template-columns: 1.2fr 1fr;
+        grid-template-rows: auto auto 1fr;
+        height: calc(100vh - 120px);
+    }
+
+    .map-card { grid-row: 3; height: 100%; }
+    #map { height: 100% !important; }
+    .charts-wrapper { grid-row: 3; overflow-y: auto; }
+}
+
+/* --- MOBILE NAV OVERRIDE (Screens < 850px) --- */
 @media (max-width: 850px) {
     .header {
-        flex-direction: column; /* Stack Title over Nav */
-        align-items: center;
-        gap: 15px;              /* Space between Title and Nav row */
+        flex-direction: column;
+        gap: 15px;
         text-align: center;
     }
-
-    .nav-links {
-        gap: 15px;              /* Tighter spacing for mobile row */
-        justify-content: center;
-        width: 100%;
-    }
-
-    /* Centers the dropdown menu under the button when stacked */
-    .dropdown-content {
-        left: 50%;
-        transform: translateX(-50%);
-    }
+    .nav-links { gap: 15px; justify-content: center; }
+    .dropdown-content { left: 50%; transform: translateX(-50%); }
 }
