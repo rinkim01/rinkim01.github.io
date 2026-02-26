@@ -278,7 +278,7 @@ canvas {
         transform: translateX(-50%);
     }
 }
-@media (max-width: 1024px) {
+@media (max-width: 850px) {
     .map-card {
         height: auto;
         min-height: 450px; /* Forces the card to be tall enough on phones */
