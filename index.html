@@ -305,17 +305,6 @@ const accelChart = new Chart(document.getElementById('accelChart'), {
         const map = L.map('map').setView([53.404, -2.968], 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
         const stickMarker = L.circleMarker([53.404, -2.968], { color: '#00ffcc', fillColor: '#00ffcc', fillOpacity: 0.8, radius: 8 }).addTo(map);
-        // Add this right after your map initialization
-window.addEventListener('resize', () => {
-    map.invalidateSize();
-});
-
-// Force a check 500ms after the page loads (Fixes the mobile "Grey Box" bug)
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 500);
-});
 
         function parseNMEA(nmeaStr) {
             if (!nmeaStr || nmeaStr === "0.0") return null;
@@ -373,7 +362,6 @@ window.addEventListener('load', () => {
                         let newPos = new L.LatLng(latDD, lonDD);
                         stickMarker.setLatLng(newPos);
                         map.panTo(newPos);
-                        map.invalidateSize();
                     }
                 }
             } catch (error) {
