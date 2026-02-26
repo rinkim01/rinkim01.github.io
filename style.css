@@ -258,3 +258,23 @@ canvas {
     flex: 1 1 150px;
 }
 
+@media (max-width: 850px) {
+    .header {
+        flex-direction: column; /* Stack Title over Nav */
+        align-items: center;
+        gap: 15px;              /* Space between Title and Nav row */
+        text-align: center;
+    }
+
+    .nav-links {
+        gap: 15px;              /* Tighter spacing for mobile row */
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Centers the dropdown menu under the button when stacked */
+    .dropdown-content {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
