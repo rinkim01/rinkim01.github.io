@@ -12,71 +12,82 @@
 
     <style>
         /* 1. Standardize the Viewport */
+        /* 1. Standardize the Viewport - Mobile First */
         html,
         body {
-            height: 100vh;
+            min-height: 100vh;
+            /* Allow body to grow with content */
             margin: 0;
             padding: 10px;
-            /* Reduced from 20px to match the old blog */
-            overflow: hidden;
             background-color: #0d1117;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
-            /* Stack header and main vertically */
-
+            overflow-x: hidden;
+            /* Prevent horizontal jitter */
+            overflow-y: auto;
+            /* Enable scrolling for mobile */
         }
 
-        /* 2. Fix the Header Height */
+        /* 2. Responsive Header */
         .header {
             flex: 0 0 auto;
-            padding: 16px 20px !important;
-            /* Matches style1.css padding */
+            padding: 10px 15px !important;
             background-color: #161b22 !important;
-            /* Matches style1.css background */
             border-bottom: 1px solid #30363d;
             display: flex;
+            flex-wrap: wrap;
+            /* Stack title and nav on very small screens */
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
-        /* 3. The Main Dashboard Area */
+        .header h1 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        /* 3. The Main Dashboard Area - Stacked by default */
         .no-scroll-dashboard {
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            grid-template-rows: auto auto 1fr;
-            gap: 8px;
-            /* Adjust this to 110px to account for the larger header */
+            grid-template-columns: 1fr;
+            /* Single column for mobile */
+            gap: 12px;
             flex-grow: 1;
-    min-height: 0;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-            /* Matches style1.css gap */
-            margin: 0;
-            padding: 0;
         }
 
         /* 4. KPI and Button Row */
         .kpi-row {
             grid-column: 1 / -1;
             display: flex;
+            flex-wrap: wrap;
+            /* Wraps cards so they don't squash */
             gap: 8px;
-            align-items: stretch;
-            margin-bottom: 10px;
         }
 
         .kpi-row .kpi-card {
-            flex: 1;
-            padding: 10px !important;
+            flex: 1 1 140px;
+            /* Allow cards to grow/shrink but maintain a base width */
+            padding: 12px !important;
             background-color: #161b22;
             border: 1px solid #30363d;
             border-radius: 8px;
-            
+            text-align: center;
+        }
+
+        .download-btn {
+            flex: 1 1 100%;
+            /* Full width button on mobile */
+            background: #7289FF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         /* 5. Map and Chart Cards */
@@ -88,41 +99,71 @@
             padding: 15px !important;
             display: flex !important;
             flex-direction: column !important;
-            min-height: 0;
-            /* Allows shrinking */
+            min-height: 350px;
+            /* Ensure visibility */
         }
 
         #map,
         .canvas-container {
+            position: relative;
             flex: 1;
+            /* Fills the card space */
             min-height: 0;
-            /* Key for No-Scroll */
+            /* CRITICAL: Allows the container to shrink/stay fixed */
+            height: 250px;
+            /* Your fixed height */
             width: 100%;
+        }
+
+        canvas {
+            display: block;
+            /* Prevents extra inline padding at the bottom */
+            max-height: 100%;
+            /* Ensures the chart never grows taller than the container */
+        }
+
+        .chart-card {
+            /* Prevents the card itself from growing if the chart tries to expand */
+            max-height: 400px;
         }
 
         .charts-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            height: 100%;
-            min-height: 0;
-        }
-       .kpi-row h2 { font-size: 1.2rem; margin: 0; line-height: 1;}
-
-        h3 {
-            margin: 0 0 5px 0 !important;
-            font-size: 1.2rem !important;
-            text-align: center;
+            gap: 12px;
         }
 
-        .download-btn {
-            background: #7289FF;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 0 20px;
-            cursor: pointer;
-            font-weight: bold;
+        /* --- DESKTOP ADAPTATIONS (Screens wider than 1024px) --- */
+        @media (min-width: 1024px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+                /* Re-enable no-scroll for the "Dashboard" look */
+            }
+
+            .no-scroll-dashboard {
+                grid-template-columns: 1.2fr 1fr;
+                /* Side-by-side layout */
+                grid-template-rows: auto auto 1fr;
+                height: calc(100vh - 100px);
+                /* Fill remaining viewport */
+            }
+
+            .download-btn {
+                flex: 0 0 auto;
+                /* Natural width on desktop */
+                padding: 0 20px;
+            }
+
+            .map-card {
+                grid-row: 3;
+            }
+
+            .charts-wrapper {
+                grid-row: 3;
+                overflow-y: auto;
+                /* If charts are too tall, scroll inside the wrapper */
+            }
         }
     </style>
 </head>
@@ -199,96 +240,78 @@
         Chart.defaults.borderColor = '#30363d';
 
         // --- Updated Common Options ---
-// --- Updated Common Options for Graph Paper Effect ---
-const commonOptions = { 
-    animation: false, 
-    maintainAspectRatio: false, // Allows us to control the container size via CSS
-    elements: { point: { radius: 0 } },
-   scales: { 
-    x: { 
-        display: true, 
-        grid: { 
-            display: true, 
-            color: 'rgba(255, 255, 255, 0.1)', // Brighter grid for paper look
-            lineWidth: 1
-        },
-        ticks: { 
-            display: true, 
-            color: '#8b949e',
-            maxTicksLimit: 10 
-        },
-        title: { 
-            display: true, 
-            text: 'Time (s)', 
-            color: '#8b949e',
-            font: { weight: 'bold' }
-        }
-    },
-    y: {
-        grid: {
-            display: true,
-            color: 'rgba(255, 255, 255, 0.1)' // Matches X-axis for square effect
-        },
-        ticks: {
-            stepSize: 5 // Forces horizontal lines every 5 units
-        }
-    }
-}
-};
+        // --- Updated Common Options for Graph Paper Effect ---
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false, // This is the most important line
+            animation: false,
+            elements: { point: { radius: 0 } },
+            scales: {
+                x: {
+                    // ... your existing x axis config
+                },
+                y: {
+                    // This prevents "endless" stretching by forcing the scale
+                    // to stay within a logical range even if data spikes to 10000
+                    beginAtZero: true,
+                    grace: '5%'
+                }
+            }
+        };
 
         // --- 1. Skating Speed Chart ---
-const speedCtx = document.getElementById('speedChart').getContext('2d');
-const speedChart = new Chart(speedCtx, {
-    type: 'line',
-    data: { 
-        labels: stickData.labels, 
-        datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }] 
-    },
-    options: { 
-        ...commonOptions, 
-        scales: { 
-            ...commonOptions.scales, // Properly inherits the "Time (s)" X-axis title
-            y: { 
-                min: 0, max: 40,
-                title: { 
-                    display: true, 
-                    text: 'Speed (km/h)', 
-                    color: '#8b949e', 
-                    font: { weight: 'bold' } 
+        const speedCtx = document.getElementById('speedChart').getContext('2d');
+        const speedChart = new Chart(speedCtx, {
+            type: 'line',
+            data: {
+                labels: stickData.labels,
+                datasets: [{ label: 'Speed', borderColor: '#7289FF', borderWidth: 2, data: stickData.speed }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    ...commonOptions.scales, // Properly inherits the "Time (s)" X-axis title
+                    y: {
+                        min: 0, max: 40,
+                        title: {
+                            display: true,
+                            text: 'Speed (km/h)',
+                            color: '#8b949e',
+                            font: { weight: 'bold' }
+                        }
+                    }
                 }
             }
-        } 
-    }
-});
+        });
 
-// --- 2. 3D Stick Motion Chart ---
-const accelCtx = document.getElementById('accelChart').getContext('2d');
-const accelChart = new Chart(accelCtx, {
-    type: 'line',
-    data: {
-        labels: stickData.labels,
-        datasets: [
-            { label: 'Ax', borderColor: '#FF2E63', borderWidth: 2, data: stickData.x, fill: false },
-            { label: 'Ay', borderColor: '#00ffcc', borderWidth: 2, data: stickData.y, fill: false },
-            { label: 'Az', borderColor: '#F1E05A', borderWidth: 2, data: stickData.z, fill: false }
-        ]
-    },
-    options: { 
-        ...commonOptions, 
-        scales: { 
-            ...commonOptions.scales, // Inherits "Time (s)" title
-            y: { 
-                min: -20, max: 20,
-                title: { 
-                    display: true, 
-                    text: 'Acceleration (m/s²)', 
-                    color: '#8b949e', 
-                    font: { weight: 'bold' } 
+        // --- 2. 3D Stick Motion Chart ---
+        const accelCtx = document.getElementById('accelChart').getContext('2d');
+        const accelChart = new Chart(accelCtx, {
+            type: 'line',
+            data: {
+                labels: stickData.labels,
+                datasets: [
+                    { label: 'Ax', borderColor: '#FF2E63', borderWidth: 2, data: stickData.x, fill: false },
+                    { label: 'Ay', borderColor: '#00ffcc', borderWidth: 2, data: stickData.y, fill: false },
+                    { label: 'Az', borderColor: '#F1E05A', borderWidth: 2, data: stickData.z, fill: false }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    ...commonOptions.scales, // Inherits "Time (s)" title
+                    y: {
+                        min: -20, max: 20,
+                        title: {
+                            display: true,
+                            text: 'Acceleration (m/s²)',
+                            color: '#8b949e',
+                            font: { weight: 'bold' }
+                        }
+                    }
                 }
             }
-        } 
-    }
-});
+        });
         // --- 4. MAP SETUP ---
         const map = L.map('map').setView([53.404, -2.968], 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
@@ -359,23 +382,21 @@ const accelChart = new Chart(accelCtx, {
         }, 1000);
 
         function downloadCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Time_s,Speed_kmh,Ax_ms2,Ay_ms2,Az_ms2\n";
-    stickData.speed.forEach((s, i) => {
-        // CHANGED: Use stickData.labels[i] instead of just 'i'
-        let row = [stickData.labels[i], s, stickData.x[i], stickData.y[i], stickData.z[i]].join(",");
-        csvContent += row + "\n";
-    });
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "hockey_session_data.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
+            let csvContent = "data:text/csv;charset=utf-8,Time_s,Speed_kmh,Ax_ms2,Ay_ms2,Az_ms2\n";
+            stickData.speed.forEach((s, i) => {
+                // CHANGED: Use stickData.labels[i] instead of just 'i'
+                let row = [stickData.labels[i], s, stickData.x[i], stickData.y[i], stickData.z[i]].join(",");
+                csvContent += row + "\n";
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "hockey_session_data.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 </body>
 
 </html>
-
-
