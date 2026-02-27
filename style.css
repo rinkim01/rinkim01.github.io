@@ -373,6 +373,3 @@ canvas {
 .download-btn:hover {
     background: #5a6edb;
 }
-video::-webkit-media-controls-fullscreen-button {
-    display: block !important;
-}
